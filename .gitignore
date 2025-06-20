@@ -1,4 +1,10 @@
-*.DS_Store
+# MacOS Temp
+*.DS_Store 
 
+# Powershell
+*.ps1
+
+# Folders
 build/
 .cache/
+
