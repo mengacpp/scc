@@ -4,6 +4,8 @@
 
 #include "cli/command_line_iterator.hpp"
 
+#include "utils/error.hpp"
+
 App::App(const CommandLine &commandLine) : _commandLine(commandLine) {}
 
 void App::run()
@@ -28,7 +30,7 @@ void App::parseCommandLine()
 
     bool hasNoInputFiles = true;
 
-    std::string errorMessage;
+    ErrorMessageStream errorMessageStream;
 
     while (!iterator.isDone())
     {
@@ -41,9 +43,9 @@ void App::parseCommandLine()
         {
             if (!iterator.peek().hasNext())
             {
-                errorMessage.append(
-                    "invalid option: " + iterator.consume().getValue() +
-                    " (expects 1 argument)\n");
+                errorMessageStream.appendError(
+                    "invalid option: " + iterator.consume().getValue(), "",
+                    "supply a filename (es. -o output)");
             }
             else
             {
@@ -53,8 +55,8 @@ void App::parseCommandLine()
         }
         else if (iterator.peek().isOption())
         {
-            errorMessage.append(
-                "unknown option: " + iterator.consume().getValue() + "\n");
+            errorMessageStream.appendError("unknown option: " +
+                                           iterator.consume().getValue());
         }
         else
         {
@@ -68,12 +70,12 @@ void App::parseCommandLine()
 
     if (hasNoInputFiles)
     {
-        errorMessage.append("no input file\n");
+        errorMessageStream.appendError("no input file");
     }
 
-    if (!errorMessage.empty())
+    if (!errorMessageStream.str().empty())
     {
-        throw std::runtime_error(errorMessage);
+        throw std::runtime_error(errorMessageStream.str());
     }
 
     return;
