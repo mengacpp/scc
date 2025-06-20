@@ -5,6 +5,7 @@
 #include "cli/command_line_iterator.hpp"
 
 #include "utils/error.hpp"
+#include "utils/usage.hpp"
 
 App::App(const CommandLine &commandLine) : _commandLine(commandLine) {}
 
@@ -14,7 +15,7 @@ void App::run()
 
     if (hasFlag(AppFlags::Help))
     {
-        std::cout << "USAGE\n";
+        std::cout << USAGE;
         return;
     }
 }
@@ -44,8 +45,9 @@ void App::parseCommandLine()
             if (!iterator.peek().hasNext())
             {
                 errorMessageStream.appendError(
-                    "invalid option: " + iterator.consume().getValue(), "",
-                    "supply a filename (es. -o output)");
+                    "option '" + iterator.consume().getValue() +
+                        "' requires an argument",
+                    "cli", "supply a filename (es. -o output)");
             }
             else
             {
@@ -55,8 +57,9 @@ void App::parseCommandLine()
         }
         else if (iterator.peek().isOption())
         {
-            errorMessageStream.appendError("unknown option: " +
-                                           iterator.consume().getValue());
+            errorMessageStream.appendError(
+                "unknown option '" + iterator.consume().getValue() + "'",
+                "cli");
         }
         else
         {
@@ -70,7 +73,7 @@ void App::parseCommandLine()
 
     if (hasNoInputFiles)
     {
-        errorMessageStream.appendError("no input file");
+        errorMessageStream.appendError("no input file", "cli");
     }
 
     if (!errorMessageStream.str().empty())

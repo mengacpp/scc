@@ -62,7 +62,8 @@ std::string ErrorMessage::get() const
 
         message << severity_to_string(_severity) << ": ";
 
-        message << _description << ". ";
+        message << ansi::Style::Bold << _description << ". "
+                << ansi::Style::Reset;
 
         if (!_remedy.empty())
         {
