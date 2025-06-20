@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 class CommandLineArgument
 {
@@ -19,10 +20,21 @@ public:
 
     const std::string &getValue() const noexcept { return _value; }
 
-    bool isOption() const noexcept
+    bool isOption(std::vector<std::string> options = {}) const noexcept
     {
         if (_value.empty()) return false;
-        return _value.at(0) == '-';
+
+        if (options.empty()) return _value.at(0) == '-';
+
+        for (const std::string &option : options)
+        {
+            if (_value == option)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 private:

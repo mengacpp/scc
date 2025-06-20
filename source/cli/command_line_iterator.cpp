@@ -6,6 +6,11 @@ CommandLineIterator::CommandLineIterator(CommandLineArgument &firstArgument)
     _currentArgument = &_firstArgument;
 }
 
+void CommandLineIterator::skip()
+{
+    _currentArgument = &_currentArgument->getNext();
+}
+
 CommandLineArgument &CommandLineIterator::consume()
 {
     CommandLineArgument &oldCurrentArgument = *_currentArgument;

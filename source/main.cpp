@@ -1,18 +1,19 @@
-#include "cli/command_line.hpp"
-#include "cli/command_line_iterator.hpp"
-
+#include "app/app.hpp"
 
 #include <iostream>
 
 int main(const int argc, const char **argv)
 {
     CommandLine commandLine(argc, argv);
+    App app(commandLine);
 
-    CommandLineIterator iterator(commandLine.getFirstArgument());
-
-    while (!iterator.isDone())
+    try
     {
-        std::cout << iterator.consume().getValue() << "\n";
+        app.run();
+    }
+    catch (std::runtime_error e)
+    {
+        std::cout << e.what();
     }
 
     return 0;

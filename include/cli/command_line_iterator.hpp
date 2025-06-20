@@ -12,6 +12,7 @@ public:
 
     CommandLineArgument &peek() const { return *_currentArgument; }
 
+    void skip();
     CommandLineArgument &consume();
 
 private:
